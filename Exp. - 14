@@ -1,0 +1,126 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Merge function for Merge Sort
+void merge(int arr[], int l, int m, int r) {
+    int n1 = m - l + 1;
+    int n2 = r - m;
+    int L[n1], R[n2];
+
+    for(int i=0; i<n1; i++) L[i] = arr[l+i];
+    for(int j=0; j<n2; j++) R[j] = arr[m+1+j];
+
+    int i=0, j=0, k=l;
+    while(i<n1 && j<n2) {
+        if(L[i] <= R[j]) arr[k++] = L[i++];
+        else arr[k++] = R[j++];
+    }
+
+    while(i<n1) arr[k++] = L[i++];
+    while(j<n2) arr[k++] = R[j++];
+}
+
+// Merge Sort
+void mergeSort(int arr[], int l, int r) {
+    if(l < r) {
+        int m = l + (r - l)/2;
+        mergeSort(arr, l, m);
+        mergeSort(arr, m+1, r);
+        merge(arr, l, m, r);
+    }
+}
+
+// Partition function for Quick Sort
+int partition(int arr[], int low, int high) {
+    int pivot = arr[high];
+    int i = low-1, temp;
+    for(int j=low; j<high; j++) {
+        if(arr[j] <= pivot) {
+            i++;
+            temp = arr[i]; arr[i] = arr[j]; arr[j] = temp;
+        }
+    }
+    temp = arr[i+1]; arr[i+1] = arr[high]; arr[high] = temp;
+    return i+1;
+}
+
+// Quick Sort
+void quickSort(int arr[], int low, int high) {
+    if(low < high) {
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi-1);
+        quickSort(arr, pi+1, high);
+    }
+}
+
+// Display array
+void display(int arr[], int n) {
+    for(int i=0; i<n; i++) printf("%d ", arr[i]);
+    printf("\n");
+}
+
+int main() {
+    int n, choice, arr[100], temp[100];
+
+    printf("Enter number of elements: ");
+    scanf("%d", &n);
+
+    printf("Enter elements: ");
+    for(int i=0; i<n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    do {
+        // Copy original array to temp
+        for(int i=0; i<n; i++) temp[i] = arr[i];
+
+        printf("\n--- Menu ---\n");
+        printf("1. Merge Sort\n");
+        printf("2. Quick Sort\n");
+        printf("3. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch(choice) {
+            case 1:
+                mergeSort(temp, 0, n-1);
+                printf("Sorted Array (Merge Sort): ");
+                display(temp, n);
+                break;
+            case 2:
+                quickSort(temp, 0, n-1);
+                printf("Sorted Array (Quick Sort): ");
+                display(temp, n);
+                break;
+            case 3:
+                printf("Exiting...\n");
+                break;
+            default:
+                printf("Invalid choice!\n");
+        }
+    } while(choice != 3);
+
+    return 0;
+}
+
+Output:
+Enter number of elements: 5
+Enter elements: 42
+70
+14
+56
+28
+
+--- Menu ---
+1. Merge Sort
+2. Quick Sort
+3. Exit
+Enter your choice: 1
+Sorted Array (Merge Sort): 14 28 42 56 70
+
+--- Menu ---
+1. Merge Sort
+2. Quick Sort
+3. Exit
+Enter your choice: 2 
+Sorted Array (Quick Sort): 14 28 42 56 70
