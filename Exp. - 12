@@ -1,48 +1,90 @@
 #include <stdio.h>
+#include <string.h>
 
-// Function to perform Binary Search
-int binarySearch(int prices[], int n, int target) {
-    int low = 0, high = n - 1;
+// Define maximum number of songs and maximum length of a song name
+#define MAX_SONGS 50
+#define MAX_LEN 100
 
+/**
+ * @brief Performs a binary search on a sorted array of strings.
+ * * @param playlist A 2D array holding the sorted list of song names.
+ * @param n The number of songs in the playlist.
+ * @param target The song name to search for.
+ * @return int The index of the song if found, otherwise -1.
+ */
+int binary_search(char playlist[][MAX_LEN], int n, char target[]) {
+    int low = 0;
+    int high = n - 1; // Matches "high = n - 1"
+
+    // Matches "Repeat while low <= high"
     while (low <= high) {
+        // Matches "Find the middle index"
         int mid = (low + high) / 2;
 
-        if (prices[mid] == target) {
-            return mid; // product found
+        // b. Compare the target song with playlist[mid]
+        // strcmp returns:
+        // < 0 if target comes before playlist[mid]
+        // = 0 if they are equal
+        // > 0 if target comes after playlist[mid]
+        int cmp = strcmp(target, playlist[mid]);
+
+        if (cmp == 0) {
+            return mid; // Song found, return its position (index)
         }
-        else if (target < prices[mid]) {
-            high = mid - 1; // search in left half
+        
+        // If target song comes before playlist[mid] alphabetically
+        else if (cmp < 0) {
+            high = mid - 1; // Set high = mid - 1
         }
+        
+        // If target song comes after playlist[mid] alphabetically
         else {
-            low = mid + 1; // search in right half
+            low = mid + 1; // Set low = mid + 1
         }
     }
-    return -1; // not found
+
+    // 3. If low > high, the loop has finished and the song was not in the list
+    return -1;
 }
 
+// --- Main part of the program to interact with the user ---
 int main() {
-    // Sorted product prices (in rupees)
-    int prices[] = {5000, 10000, 15000, 20000, 25000, 30000};
-    int n = sizeof(prices) / sizeof(prices[0]);
+    int n; // Number of songs
+    char playlist[MAX_SONGS][MAX_LEN];
+    char target_song[MAX_LEN];
 
-    int target;
-    printf("Enter the product price you want to search: ");
-    scanf("%d", &target);
+    // Get number of songs
+    printf("Enter number of songs: ");
+    scanf("%d", &n);
 
-    int result = binarySearch(prices, n, target);
-
-    if (result != -1) {
-        printf("Product with price %d found at position %d (index).\n", target, result);
-    } else {
-        printf("Product with price %d not found in the list.\n", target);
+    // Check if the number of songs exceeds our defined limit
+    if (n > MAX_SONGS) {
+        printf("Error: Cannot store more than %d songs.\n", MAX_SONGS);
+        return 1; // Exit with an error
     }
 
-    return 0;
+    printf("Enter songs in alphabetical order:\n");
+    
+    // Get all the songs from the user
+    for (int i = 0; i < n; i++) {
+        // scanf("%s", ...) reads a single word
+        scanf("%s", playlist[i]);
+    }
+
+    // Get the song to search for
+    printf("Enter song to search: ");
+    scanf("%s", target_song);
+
+    // Run the binary search
+    int result_index = binary_search(playlist, n, target_song);
+
+    // Print the final result
+    if (result_index != -1) {
+        printf("Song '%s' found in playlist at position %d.\n", target_song, result_index);
+    } else {
+        // This matches your example output
+        printf("Song '%s' not found in playlist.\n", target_song);
+    }
+
+    return 0; // Exit successfully
 }
-
-OUTPUT:-
-Enter the product price you want to search: 25000
-Product with price 25000 found at position 4 (index).
-
-Enter the product price you want to search: 14000
-Product with price 14000 not found in the list.
